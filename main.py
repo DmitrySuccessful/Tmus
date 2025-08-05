@@ -2,25 +2,21 @@ import replicate
 import os
 from dotenv import load_dotenv
 
-# Загрузка переменных из .env
+# Загрузим .env файл
 load_dotenv()
 
-# Получаем токен
-api_token = os.getenv("REPLICATE_API_TOKEN")
-assert api_token, "API token не найден. Убедись, что в .env файл есть REPLICATE_API_TOKEN."
+# Получим токен
+REPLICATE_API_TOKEN = os.getenv("REPLICATE_API_TOKEN")
 
-# Устанавливаем токен
-replicate.Client(api_token=api_token)
+# Установим токен
+os.environ["REPLICATE_API_TOKEN"] = REPLICATE_API_TOKEN
 
-# Задаем модель
-model = replicate.models.get("lucataco/magnet")
-version = model.versions.get("e8e2ecd4a1dabb58924aa8300b668290cafae166dd36baf65dad9875877de50e")
+# Вызов модели
+output = replicate.run(
+    "lucataco/magnet:e8e2ecd4a1dabb58924aa8300b668290cafae166dd36baf65dad9875877de50e",
+    input={
+        "prompt": "a melodic lo-fi beat with soft drums and a jazzy vibe"
+    }
+)
 
-# Ввод: описание сцены
-prompt = "a cat skateboarding in Tokyo at night"
-
-# Запуск
-output = version.predict(prompt=prompt)
-
-# Вывод результата
-print("Output video URL:", output)
+print("🎵 Output:", output)
